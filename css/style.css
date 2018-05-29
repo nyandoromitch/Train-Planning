@@ -1,0 +1,144 @@
+svg {
+    font-size: 0.7vw;
+    font-family: quicksand;
+    font-weight: 500;
+    background: #e3e3e3;
+    border-radius: 0.4vw;
+}
+body {
+    background-color: #f7f7f7 !important;
+    margin: 0;
+    overflow: hidden;
+}
+input[type=checkbox] {
+    box-sizing: border-box;
+    padding: 0;
+    margin-top: 2px;
+}
+input[type=radio] {
+    box-sizing: border-box;
+    padding: 0;
+    margin-top: 0.4em;
+    margin-top: 0.2em;
+}
+
+circle{
+    r: 4;
+    stroke-width: 2;
+    stroke: #ffffff;
+}
+
+svg g:nth-child(7) g:nth-child(1) path {
+    stroke-linecap: round;
+    stroke-width: 2px;
+    stroke-linejoin: round;
+    stroke: #0080fc;
+}
+svg g:nth-child(7) g:nth-child(2) circle {
+    fill: #0080fc;
+}
+svg g:nth-child(7) g:nth-child(3) path {
+    stroke-linecap: round;
+    stroke-width: 2px;
+    stroke-linejoin: round;
+    stroke: #f79a7a;
+}
+svg g:nth-child(7) g:nth-child(4) circle {
+    fill: #f79a7a;
+}
+
+
+.northcolor {
+    height: 0.8vw;
+    width: 0.8vw;
+    background: #0080fc;
+    float: left;
+    border-radius: 0.2vw;
+    margin: 0 0.2vw;
+}
+
+.northB {
+    line-height: 1.25em;
+    margin-left: 1em;
+}
+.southcolor {
+    height: 0.8vw;
+    width: 0.8vw;
+    background: #f79a7a;
+    float: left;
+    border-radius: 0.2vw;
+    margin: 0 0.2vw;
+}
+.southB {
+    line-height: 1.25em;
+    margin-left: 1em;
+}
+
+#map-canvas {
+    width: 100%;
+    height: 20vw;
+    margin-bottom: 1vw;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow: hidden;
+    background: #dcdcdc;
+}
+.map-section {
+    height: 100vh;
+}
+.row {
+    display: flex;
+    width: 80vw;
+    flex-wrap: wrap;
+    margin: auto;
+    justify-content: space-evenly;
+}
+.col-md-2 {
+    width: 15vw;
+    margin-bottom: 1vw;
+}
+input[type="submit"] {
+    padding: 0 1em;
+    margin: 0;
+    line-height: 1;
+    width: 6vw;
+    color: #ffffff;
+    border: 1px solid #c5c5c5;
+    border-radius: 0 0.2vw 0.2vw 0;
+    outline: none;
+    cursor: pointer;
+    background: #c5c5c5;
+    font-family: 'Quicksand';
+}
+input[type=submit]:active {
+    color: #a0a0a0;
+    background: #fff;
+    outline: none;
+}
+input[type=time] {
+    display: inline-block;
+    width: 7vw;
+    line-height: 1.25em;
+    padding: .5em;
+    transition: border-color .2s ease;
+    border-radius: 4px 0 0 4px;
+    box-shadow: none;
+	outline: none;
+     border: 1px solid #dcdcdc;
+    background: #dcdcdc;
+    color: #3e3e3e;
+    font-family: 'Quicksand';
+}
+input[type=time]:active, input[type=time]:focus {
+    border: 1px solid #c5c5c5;
+}
+.col-md-2 label {
+    color: #959595;
+    font-size: 15px;
+    font-weight: bold;
+}
+.col-md-2 form {
+    display: flex;
+    margin-top: 0.4em;
+}

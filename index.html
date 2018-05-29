@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en" ><head>
+<meta charset="UTF-8">
+<title>Code</title>
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/jquery.fullPage.min.css">
+    <link type="text/css" rel="stylesheet" href="ex.css"/>
+    <script type="text/javascript" src="protovis.js"></script>
+    <script type="text/javascript" src="code.js"></script>
+    <script type="text/javascript" src="js/db.js"></script>
+<!--
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+   
+   -->
+   
+    <style type="text/css">
+		@font-face {
+    font-family: 'Quicksand';
+  	src: url('fonts/Quicksand/Quicksand-Regular.ttf');
+  	src:  url('fonts/Quicksand/Quicksand-Regular.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+		@font-face {
+    font-family: 'Quicksand';
+  	src: url('fonts/Quicksand/Quicksand-Medium.ttf');
+  	src:  url('fonts/Quicksand/Quicksand-Medium.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+body {
+    font-family: "Quicksand";
+	font-weight: 500;
+	}
+	
+#fig {
+    height: 694px;
+    width: 1500px;
+}
+#controls {
+    padding-left: 100px;
+    display: inline-flex;
+    margin-bottom: 1em;
+}
+    </style>
+<body>
+<!-- START NAVIGATION -->			
+    																
+    														
+    																		
+<div>			
+	<div class="page-container sections ">	
+  		<section class="section home" id="section1">
+    		<div class="section-content">
+    			
+    			
+   <div id="fig">
+    <div id="controls" >
+      <strong>Train Type</strong>
+      
+      <input type="checkbox" id="normal" checked onchange="speedn = this.checked; vis.render();">
+      <label for="Freight">Freight</label>
+      
+      <input type="checkbox" id="limited" checked onchange="speedl = this.checked; vis.render();">
+      <label for="limited">Passenger</label>
+      
+      
+      
+      <strong style="margin-left:6em;">Direction:</strong>
+      
+      <label class="northB" for="northbound">
+		  <div class="northcolor" ></div>
+      Northbound</label>
+      <input type="checkbox" id="northbound" checked onchange="dirn = this.checked; vis.render();">
+      
+      
+      
+      
+      <label class="southB" for="southbound">Southbound
+		  <div class="southcolor" ></div></label>
+      <input type="checkbox" id="southbound" checked onchange="dirs = this.checked; vis.render();">
+      
+      <strong style="margin-left:6em;">Days:</strong>
+      <input id="weekdays" name="daySelect" value="Wk" type="radio" checked onchange="oper = this.value; vis.render();">
+      <label for="weekdays">Weekdays</label>
+      <input name="daySelect" id="saturday" value="Sa" type="radio" onchange="oper = this.value; vis.render();">
+      <label for="saturday">Saturday</label>
+      <input name="daySelect" id="sunday" value="Su" type="radio" onchange="oper = this.value; vis.render();">
+      <label for="sunday">Sunday</label>
+    </div>
+<script href="code.js">
+
+</script>
+    <script type="text/javascript+protovis">
+
+// Start with showing all trains on weekdays
+var dirn = true,
+    dirs = true,
+    oper = "Wk",
+    speedn = true,
+    speedl = true,
+    speedb = true;
+
+// Flatten the data so that we have an array of (Train x Station x Time)
+northbound = pv.flatten(northbound)
+    .key("train")
+    .key("station", function(i) stationsNS[stationsNS.length - i - 1].name)
+    .key("time")
+    .array();
+
+southbound = pv.flatten(southbound)
+    .key("train")
+    .key("station", function(i) stationsNS[i].name)
+    .key("time")
+    .array();
+
+// Label the trains with their directions of travel
+northbound.forEach(function(stop) stop.bound = "N");
+southbound.forEach(function(stop) stop.bound = "S");
+
+// Concatinate the northbound and southbound trains to make a list of all trains
+var allTrains = northbound.concat(southbound).filter(function(stop) stop.time.length > 1);
+
+// Parse the stop time and do some extra clean up
+allTrains.forEach(function(stop) {
+  // parse type
+  stop.type = stop.train.charAt(3);
+  stop.train = stop.train.substr(0,3);
+
+  // check to see if the stop is an interconnect
+  var time = stop.time.charAt(0) == "i" ? stop.time.substr(1) : stop.time;
+  if (time.length == 6) {
+    var h = parseInt(time.substr(0, 1), 10);
+    var m = parseInt(time.substr(2, 2), 10);
+    var pm = (time.substr(4, 2) == "pm");
+  } else {
+    var h = parseInt(time.substr(0, 2), 10);
+    var m = parseInt(time.substr(3, 2), 10); // parseInt("09") == 0 because it assumes octal
+    var pm = (time.substr(5, 2) == "pm");
+  }
+
+  if (h == 12) pm = !pm // for 12 we have to swap am and pm because time is retarded
+  time = h*60 + m + (pm?720:0); // calculate the number of minutes from midnight
+  stop.mins = time + ((time < 180)?1440:0); // make the day switch at 3am instead of midnight
+});
+
+// Nest the trains-stops by train as we will draw one line per train
+var trains = pv.nest(allTrains)
+    .key(function(d) d.train)
+    .entries();
+
+// Initialize the variables
+var w = 1300,
+    h = 600,
+    minHour = 4,
+    maxHour = 26,
+    showMin = 4 * 60,
+    showMax = 26 * 60;
+
+// Make the scale functions
+var x = pv.Scale.linear(showMin, showMax).range(0, w),
+    s2d = pv.Scale.ordinal(stationsNS, function(s) s.name).range(stationsNS, function(s) s.dist),
+    y = pv.Scale.linear(stationsNS, function(s) s.dist).range(h, 0).by(s2d);
+
+function hourText(d) {
+  var h = d/60 % 24;
+  return (h==0?'MIDNIGHT':(h==12?'NOON':(h<12?h:h-12)));
+}
+
+// The root panel, with padding for labels
+var vis = new pv.Panel()
+    .width(w)
+    .height(h)
+    .left(100)
+    .right(100)
+    .bottom(30)
+    .top(30);
+
+// Add hour lines
+var hour = vis.add(pv.Rule)
+    .data(function() pv.range(Math.ceil(showMin / 60) * 60, showMax + 1, 60))
+    .left(x)
+    .strokeStyle("#eee");
+
+hour.anchor("top").add(pv.Label)
+    .textStyle(function(h) (h / 60 % 24) % 12 ? "#333333" : "#000")
+    .text(hourText);
+
+hour.anchor("bottom").add(pv.Label)
+    .textStyle(function(h) (h / 60 % 24) % 12 ? "#333333" : "#000")
+    .text(hourText);
+
+// Add station lines
+var station = vis.add(pv.Rule)
+    .data(stationsNS)
+    .bottom(function(s) y(s.name))
+    .strokeStyle(function(s) s.bullet ? "#bbb" : "#eee");
+
+station.anchor("left").add(pv.Label)
+    .textStyle(function(s) s.bullet ? "#000" : "#888")
+    .text(function(s) s.name);
+
+station.anchor("right").add(pv.Label)
+    .textStyle(function(s) s.bullet ? "#000" : "#888")
+    .text(function(s) s.name);
+
+// A panel for each train
+var panel = vis.add(pv.Panel)
+    .data(trains)
+    .visible(function(train) {
+          var t = train.values[0];
+          if (!speedb && t.type == "B") return false;
+          if (!speedl && t.type == "L") return false;
+          if (!speedn && /N|W|S/.test(t.type)) return false;
+          if (!dirn && t.bound == "N") return false;
+          if (!dirs && t.bound == "S") return false;
+          switch (oper) {
+            case "Wk": return /N|L|B/.test(t.type);
+            case "Su": return /W|S/.test(t.type);
+            default: return t.type == "W";
+          }
+        });
+
+// A line curve (with dots) for each station
+var line = panel.add(pv.Line)
+    .data(function(d) d.values)
+    .left(function(stop) x(stop.mins))
+    .bottom(function(stop) y(stop.station))
+    .strokeStyle(function(stop) types[stop.type])
+    .lineWidth(1);
+
+// Ticks that indicate the stops
+line.add(pv.Dot)
+    .radius(2.5)
+    .lineWidth(.75)
+    .strokeStyle("white")
+    .fillStyle(function(stop) types[stop.type])
+    .title(function(stop) stop.type + stop.train + "-" + stop.bound + "B: "
+        + stop.station + " at " + stop.time);
+
+vis.render();
+
+    </script>
+  </div>
+ 			</div>
+  		</section>
+  			
+  			
+  			
+  			
+  			
+  			
+  			
+  			
+  			
+  			
+  			
+  			
+  			
+  			
+  			
+  			
+  			
+  			
+  			
+  			
+  			
+  			
+  			
+  			
+  			
+  			
+  		<section class="section" id="2 section2">
+    		<div class="section-content map-section">
+    		
+    		
+    <div id="map-canvas"></div>
+    		
+    		
+  <div class="container"> 
+      <div class="row">
+          <div class="col-md-2">
+             <label for="time1">Bulawayo</label>
+                    <form action=actionpage.php method="post">
+                        <input type="time" name="usr1_time">
+                        <input type="submit">
+                      </form>
+          </div>
+          <div class="col-md-2">
+              <label for="time2">Mpompoma</label>
+              <form action="/action_page.php">
+                <input type="time" name="usr2_time">
+                <input type="submit">
+              </form>
+          </div>
+          <div class="col-md-2">
+              <label for="time3">DPMD</label>
+              <form action="/action_page.php">
+                <input type="time" name="usr3_time">
+                <input type="submit">
+              </form>
+          </div>
+          <div class="col-md-2">
+              <label for="time4">Luveve</label>
+              <form action="/action_page.php">
+                <input type="time" name="usr4_time">
+                <input type="submit">
+              </form>
+          </div>
+          <div class="col-md-2">
+            <label for="time5">Siphasiphasi</label>
+            <form action="/action_page.php">
+                <input type="time" name="usr5_time">
+                <input type="submit">
+              </form>
+          </div>
+          <div class="col-md-2">
+            <label for="time6">Redbank</label>
+            <form action="/action_page.php" method="post">
+                <input type="time" name="usr6_time">
+                <input type="submit">
+              </form>
+          </div>
+          <div class="col-md-2">
+             <label for="time7">Morgans</label>
+                <form action="/action_page.php">
+                    <input type="time" name="usr7_time">
+                    <input type="submit">
+                </form>
+          </div>
+          <div class="col-md-2">
+            <label for="time8">Nyamandlovu</label>
+                <form action="/action_page.php">
+                    <input type="time" name="usr8_time">
+                    <input type="submit">
+                </form>
+          </div>
+          <div class="col-md-2">
+                <label for="time9">Tenela</label>
+                <form action="/action_page.php">
+                    <input type="time" name="usr9_time">
+                    <input type="submit">
+                </form>
+          </div>
+          <div class="col-md-2">
+                <label for="time10">Highfields</label>
+                <form action="/action_page.php">
+                    <input type="time" name="usr10_time">
+                    <input type="submit">
+                </form>
+          </div>
+          <div class="col-md-2">
+                <label for="time11">Deli</label>
+                <form action="/action_page.php">
+                    <input type="time" name="usr11_time">
+                    <input type="submit">
+                </form>
+          </div>
+          <div class="col-md-2">
+                <label for="time12">Igusi</label>
+                <form action="/action_page.php">
+                    <input type="time" name="usr12_time">
+                    <input type="submit">
+                </form>
+          </div>
+          <div class="col-md-2">
+                <label for="time13">Buda</label>
+                <form action="/action_page.php">
+                    <input type="time" name="usr13_time">
+                    <input type="submit">
+                </form>
+          </div>
+          <div class="col-md-2">
+                <label for="time14">Saw Mills</label>
+                <form action="/action_page.php">
+                    <input type="time" name="usr14_time">
+                    <input type="submit">
+                </form>
+          </div>
+          <div class="col-md-2">
+                <label for="time15">Umguza</label>
+                <form action="/action_page.php">
+                    <input type="time" name="usr15_time">
+                    <input type="submit">
+                </form>
+          </div>
+          <div class="col-md-2">
+                <label for="time16">Teakland</label>
+                <form action="/action_page.php">
+                    <input type="time" name="usr16_time">
+                    <input type="submit">
+                </form>
+          </div>
+          <div class="col-md-2">
+                <label for="time17">Gwaai</label>
+                <form action="/action_page.php">
+                    <input type="time" name="usr17_time">
+                    <input type="submit">
+                </form>
+          </div>
+          <div class="col-md-2">
+                <label for="time18">Mpindo</label>
+                <form action="/action_page.php">
+                    <input type="time" name="usr18_time">
+                    <input type="submit">
+                </form>
+          </div>
+          <div class="col-md-2">
+                <label for="time19">Guswini</label>
+                <form action="/action_page.php">
+                    <input type="time" name="usr19_time">
+                    <input type="submit">
+                </form>
+          </div>
+          <div class="col-md-2">
+                <label for="time20">Ingwe</label>
+                <form action="/action_page.php">
+                    <input type="time" name="usr20_time">
+                    <input type="submit">
+                </form>
+          </div>
+          <div class="col-md-2">
+                <label for="time21">Mukwa</label>
+                <form action="/action_page.php">
+                    <input type="time" name="usr21_time">
+                    <input type="submit">
+                </form>
+          </div>
+          <div class="col-md-2">
+                <label for="time22">Isilwana</label>
+                <form action="/action_page.php">
+                    <input type="time" name="usr22_time">
+                    <input type="submit">
+                </form>
+          </div>
+          <div class="col-md-2">
+                <label for="time23">Waterloor</label>
+                <form action="/action_page.php">
+                    <input type="time" name="usr23_time">
+                    <input type="submit">
+                </form>
+          </div>
+          <div class="col-md-2">
+                <label for="time24">Dete</label>
+                <form action="/action_page.php">
+                    <input type="time" name="usr24_time">
+                    <input type="submit">
+                </form>
+          </div>
+          <div class="col-md-2">
+                <label for="time25">Nengasha</label>
+                <form action="/action_page.php">
+                    <input type="time" name="usr25_time">
+                    <input type="submit">
+                </form>
+          </div>
+          <div class="col-md-2">
+                <label for="time26">Nichokomela</label>
+                <form action="/action_page.php">
+                    <input type="time" name="usr26_time">
+                    <input type="submit">
+                </form>
+          </div>
+          <div class="col-md-2">
+                <label for="time27">Tshontanda</label>
+                <form action="/action_page.php">
+                    <input type="time" name="usr27_time">
+                    <input type="submit">
+                </form>
+          </div>
+          <div class="col-md-2">
+                <label for="time28">Lukosi</label>
+                <form action="/action_page.php">
+                    <input type="time" name="usr28_time">
+                    <input type="submit">
+                </form>
+          </div>
+          <div class="col-md-2">
+                <label for="time29">Hwange</label>
+                <form action="/action_page.php">
+                    <input type="time" name="usr29_time">
+                    <input type="submit" placeholder="SUB">
+                </form>
+          </div>
+          <div class="col-md-2">
+                <label for="time30">Old Wankie</label>
+                <form action="/action_page.php">
+                    <input type="time" name="usr30_time">
+                    <input type="submit">
+                </form>
+          </div>
+      
+    </div>
+</div>
+    		
+  <!--
+  <div class="container"> 
+    <div class="row">
+        <div class="col-md-6">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d214348.29487607192!2d28.558647125524967!3d-20.09011594268588!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1931a4e706b17161%3A0xa1c0385fc5cbbfee!2sZimbabwe!5e0!3m2!1sen!2szw!4v1524143440047"
+                 width="600" 
+                 height="450" 
+                 frameborder="0" 
+                 style="border:0" allowfullscreen>
+                </iframe>
+		</div>
+	  </div>
+	  </div>
+-->
+    		</div>
+  		</section>
+	</div>
+	</div>
+	
+<script  src="js/jquery.min.js"></script>
+
+
+
+    <script  src="js/tab.js"></script>
+
+<script  src="js/jquery.fullPage.min.js"></script>
+<script  src="js/index.js"></script>
+<script  src="js/index2.js"></script>
+<script src="js/main.js"></script>
+<!--
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maps.googleapis.com/maps/api/js?extension=.js&output=embed"></script>
+
+
+</body>
+</html>

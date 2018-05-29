@@ -1,0 +1,370 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+	
+@font-face {
+    font-family: 'Quicksand';
+  	src: url('fonts/Quicksand/Quicksand-Regular.ttf');
+  	src:  url('fonts/Quicksand/Quicksand-Regular.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+	
+		@font-face {
+    font-family: 'Quicksand';
+  	src: url('fonts/Quicksand/Quicksand-Medium.ttf');
+  	src:  url('fonts/Quicksand/Quicksand-Medium.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+body {
+    font-family: 'Quicksand';
+     background: #f7f7f7;
+	margin: 0;
+    font-family: "Quicksand";
+	font-weight: 500;
+	}
+	
+* {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+	-webkit-overflow-scrolling: touch;
+}
+	
+a {
+    text-decoration: none;
+     color: #898989;
+}	
+a:active {
+     color: #0080fc;
+}	
+input[type=text],input[type=email],input[type=password] {   
+    /* Remove First */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+form {
+    position: absolute;
+    width: 30vw;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+}
+
+/* Avatar image */
+.avatar {
+    width: 8vw;
+    margin: 0 auto 4vw;
+}
+
+/* Add padding to containers */
+.container {
+    padding: 16px;
+}
+
+/* The "Forgot password" text */
+span.psw {
+    float: right;
+    padding-top: 16px;
+}
+.avatar path {
+    fill: #d1d1d1;
+}
+.login-label {
+    width: 3.3vw;
+    height: 2.7vw;
+    border-radius: 0.2vw 0 0 0.2vw;
+    background: #c5c5c5;
+}
+.svg-icon {
+    height: 3vw;
+}
+.svg-icon path {
+    stroke-width: 0.25vw;
+}
+.login-input {
+    border: 1px solid #dcdcdc;
+    background: #dcdcdc;
+    color: #3e3e3e;
+    outline: none;
+    padding: 0.45vw;
+    font-family: "Quicksand";
+    font-size: 1vw;
+    font-weight: 500;
+    width: 100%;
+    border-radius: 0 0.2vw 0.2vw 0;
+}
+.standard-button {
+    font-size: 1.6vw;
+    width: 22.9vw;
+    height: 4.5vw;
+    line-height: 3.9vw;
+    border-radius: 4.06vw;
+}
+.standard-button:before {
+    top: -0.72vw;
+    left: -0.7vw;
+    bottom: -0.7vw;
+    right: -0.7vw;
+}
+.bottom-link {
+    font-size: 1.6vw;
+    margin-top: 1vw;
+}
+
+
+.login__row  ::placeholder {
+	opacity: 1;
+	font-weight: 500;
+}
+
+.svg-icon {
+    height: 1.5vw;
+    line-height: 3vw;
+    position: relative;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+}
+.svg-icon path {
+    stroke: rgba(255, 255, 255, 0.9);
+    stroke-width: 0.14vw;
+    fill: none;
+    stroke-linecap: round;
+    stroke-miterlimit: 10;
+}
+.login__row {
+    display: flex;
+    margin-bottom: 1.8vw;
+}
+.account-text {
+  display: none;
+}
+	
+	
+	
+.standard-button {
+    font-family: "Quicksand";
+    font-size: 0.9vw;
+    display: block;
+    text-decoration: none;
+    background-color: #ffffff;
+    background-image: -webkit-linear-gradient(top, #ffffff, #f1f1f1);
+    box-shadow: 0px 0px 0.06vw #aaa, inset 0px 0px 0.1vw #fff;
+    color: #a7a7a7;
+    width: 9.9vw;
+    height: 2.1vw;
+    line-height: 1.9vw;
+    position: relative;
+    text-align: center;
+    font-weight: 500;
+    border-radius: 1.06vw;
+    border: solid 1px #e4e4e4;
+    outline: none;
+    margin: auto;
+      cursor: pointer;
+}
+.standard-button:before {
+    content: "";
+    display: block;
+    background: #fff;
+    border: var(--default-pixel-size) solid #e7e7e7;
+    position: absolute;
+    top: -0.5vw;
+    left: -0.5vw;
+    bottom: -0.5vw;
+    right: -0.5vw;
+    z-index: -1;
+    border-radius: 5vw;
+    box-shadow: inset 0px 0px 1.2vw #ddd;
+}
+.standard-button:active {
+    box-shadow: 0 0px 0.35vw rgba(0, 128, 252, 0.6);
+    border: solid 1px #0080fc;
+    color: #0080fc;
+}
+.standard-button:hover {
+  text-decoration: none;
+  background: #f5f5f5;
+}
+
+
+.buttons-wrapper {
+    position: relative;
+    margin: auto;
+}
+.checkbox__p {
+    font-size: 1vw;
+    color: #8c8989;
+    margin: 0;
+}
+.checkbox {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4vw;
+}
+.checkbox__toggle:checked ~ .back {
+    background: #0cb018;
+}
+.checkbox__background {
+    height: 100%;
+    width: 100%;
+    z-index: 14;
+    display: block;
+    border-radius: 5vw;
+    box-shadow: inset 0px 0vw 1vw rgba(170, 170, 170, 0.78);
+    float: right;
+    transition: box-shadow .3s ease-in-out, padding .25s ease-in-out;
+}
+.checkbox__toggle:checked ~ .checkbox__background {
+    box-shadow: inset 0 0 0 0.7vw #0080fc;
+}
+.checkbox__container {
+    display: block;
+    position: relative;
+    height: 1.3vw;
+    width: 2.5vw;
+    background: #d0d0d0;
+    border-radius: 3vw;
+     cursor: pointer;
+}
+.checkbox__toggle {
+  display: none;
+}
+.checkbox__toggle:checked ~ .checkbox__path .path--top {
+  stroke-dashoffset: 0px;
+  stroke: #0cb018;
+}
+.checkbox__toggle:checked ~ .checkbox__path .path--bottom {
+  stroke-dasharray: 14px 360px;
+  stroke-dashoffset: 0px;
+  stroke: #0cb018;
+}
+.checkbox__toggle:checked ~ .checkbox__checker {
+      left: 49%;
+}
+
+.checkbox__checker {
+    position: absolute;
+    top: 0.04vw;
+    left: 0.04vw;
+    z-index: 1;
+    display: block;
+    width: 1.2vw;
+    height: 1.2vw;
+    background: linear-gradient(to bottom, #ffffff, #f2f2f2);
+    border-radius: 50%;
+}
+.checkbox__bg, .checkbox__path {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.checkbox__bg .shape-bg {
+  fill: #aaa;
+}
+.checkbox__path {
+  z-index: 9;
+}
+.checkbox__path .shape-bg {
+  fill: #fff;
+  stroke-width: 1px;
+  stroke: #aaa;
+}
+.checkbox__path .path {
+  stroke-width: 4px;
+  stroke: #bf1e1e;
+  fill: none;
+  stroke-linecap: round;
+  transition: 1s;
+}
+.checkbox__path .path--top {
+  stroke-dasharray: 33px 360px;
+  stroke-dashoffset: -336px;
+}
+.checkbox__path .path--bottom {
+  stroke-dasharray: 33px 360px;
+  stroke-dashoffset: -324px;
+}
+.checkbox #checkbox__circle {
+  z-index: 9;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  fill: #fff;
+}
+
+.anim {
+  transition-timing-function: cubic-bezier(0.385, -0.6, 0.685, 1.59);
+  transition-duration: .2s;
+}
+
+.anim--go-right {
+    left: 49%;
+}
+
+.bottom-link {
+    list-style: none;
+    text-align: center;
+    font-family: 'Quicksand';
+    font-size: 0.9vw;
+    position: absolute;
+    transform: translateX(-50%);
+    left: 50%;
+    bottom: 1.5vw;
+}
+</style>
+</head>
+<body>
+
+<form action="code.html">
+    <div class="avatar">
+    <svg viewBox="0 0 979.92 979.92"><path d="M489.85,0C760.74,0,980,219.33,979.92,490.34,979.89,761,760.3,980,489.08,979.92,218.63,979.82-.22,760,0,488.58.22,219.09,219.87,0,489.85,0ZM167.67,398.06V675.51c2.38-.29,4.35-.46,6.29-.78,19.37-3.21,38.73-6.56,58.13-9.57,3.7-.57,5-1.67,4.93-5.56-.2-24.83-.14-49.65-.14-74.48,0-1.55.15-3.1.27-5.53,1.89,2.06,3.14,3.36,4.32,4.71q28.77,32.94,57.47,65.94c1.92,2.22,3.68,3.32,6.77,2.79,19.35-3.33,38.75-6.4,58.09-9.81a8.82,8.82,0,0,0,5.26-3.65q11.18-17.74,21.85-35.81a9.17,9.17,0,0,1,7.31-5c15.47-2.28,30.89-5,46.33-7.49,10.15-1.64,20.31-3.2,31.28-4.92v38.56l66.77-11V336.58c-1.78.16-3.26.19-4.71.43-16.92,2.77-33.82,5.66-50.76,8.28a9.91,9.91,0,0,0-7.67,5.26q-70.29,115.08-140.8,230c-1.09,1.79-2.28,3.52-3.68,5.67l-24.18-25.39,5.42-2.8c42.33-21.75,68.07-67.52,62.91-111.86-5.08-43.61-43.33-74-87-68.54-19.3,2.43-38.44,6.16-57.65,9.33C212.33,390.65,190.18,394.33,167.67,398.06ZM734,513.59V304.71L665.63,316V593.32c2-.18,3.64-.22,5.26-.48,45.47-7.51,90.92-15.15,136.42-22.43,4.74-.76,5.46-2.63,5.41-6.71-.17-16.66-.07-33.31-.07-50,0-4.13,0-8.27,0-13ZM637.7,598.26V320.58L569.4,331.87V609.49Z"/><path d="M236.55,523.73c0-6.18,0-11.48,0-16.78,0-18.15.08-36.31-.07-54.46,0-3.67.91-5.21,4.83-5.71,9.07-1.16,18-3.27,27.09-4.36a55.08,55.08,0,0,1,16.36.08c16.71,3.1,25.34,17.47,22.83,37-2.68,20.77-16.43,35.05-37.27,38.64C259.34,520,248.36,521.76,236.55,523.73Z"/><path d="M425,544.85l49.56-76.59a24.44,24.44,0,0,1,.7,3.72c0,20.16,0,40.32.07,60.48,0,3-.69,4.29-4,4.79C456.24,539.51,441.21,542.15,425,544.85Z"/></svg>
+	  </div>
+
+						<div class="sign-in-form-input">
+        					<div class="login__row">
+        						<label class="login-label">
+									<svg class="login__icon name svg-icon" viewBox="0 0 42 42">
+										<path d="M21,2.5a8,8,0,1,1-8,8h0A8,8,0,0,1,21,2.5Z"/>
+										<path d="M39.41,39.5c0-7.88-5.54-14.26-12.4-14.26H14.81C8,25.24,2.41,31.62,2.41,39.5"/>
+									</svg>
+								</label>
+         						<input type="text" class="login-input" placeholder="Enter Username" name="uname" required=""/>
+        					</div>
+        					<div class="login__row password">
+        						<label class="login-label">
+									<svg class="login__icon pass svg-icon" viewBox="0 0 42 42">
+									<path d="M5.52,19.08h31a3.21,3.21,0,0,1,3,3.34V36.16a3.21,3.21,0,0,1-3,3.34h-31a3.21,3.21,0,0,1-3-3.34V22.42A3.21,3.21,0,0,1,5.52,19.08Z"/>
+									<path d="M9.41,18.55V11.43C10-.64,32-.32,32.59,11.43v7.11"/>
+									</svg>
+								</label>
+          						<input type="password" class="login-input" placeholder="Enter Password" name="psw" required=""/>
+        					</div>
+						</div>
+        					<div class="checkbox">
+        					<p class="checkbox__p">Remember me</p>
+  								<label class='checkbox__container'>
+    								<input checked="checked" class='checkbox__toggle' type='checkbox'>
+	  								<span class="checkbox__background"></span>
+    								<span class='checkbox__checker anim'></span>
+  								</label>
+        					</div>
+          				<div class="buttons-wrapper">
+							<button class="standard-button centre">Sign In</button>
+						</div>
+
+  
+  
+</form>
+  
+						<div class="login__signup bottom-link forget-text"><a href="index.html">Forgot Password</a></div>
+</body>
+</html>
